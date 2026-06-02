@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #7C6FE8;
+  --color-primary-light: #9B90F0;
+  --color-primary-dark: #5C4FD6;
+  --color-secondary: #F8F7FF;
+  --color-accent: #AAF0D1;
+  --color-accent-dark: #7ED4B0;
+  --color-dark: #1E1029;
+  --color-dark-light: #2D1B3D;
+  --color-surface: #FFFFFF;
+  --color-muted: #8B83A0;
+  --color-danger: #F472B6;
+  --color-warning: #FBBF24;
+  --color-success: #34D399;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-secondary);
+  color: var(--color-dark);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #7C6FE8, #AAF0D1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #7C6FE8, #5C4FD6);
+}
+
+.gradient-bg-light {
+  background: linear-gradient(135deg, #F8F7FF, #F0EDFF);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(124, 111, 232, 0.15);
+}

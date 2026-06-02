@@ -1,0 +1,35 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+*.egg
+.Python
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Environment files (contain secrets)
+.env
+backend/.env
+database/.env
+frontend/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+*.log
+
+# Project specific
+backend/app/uploads/*
+!backend/app/uploads/.gitkeep

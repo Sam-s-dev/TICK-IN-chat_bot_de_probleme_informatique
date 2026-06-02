@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cahier des Charges — Chatbot Signalement — Centre Informatique UGANC</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0f0f;
+    --paper: #f5f2ec;
+    --accent: #c8420a;
+    --accent2: #1a4a8a;
+    --muted: #6b6560;
+    --line: #d4cfc8;
+    --highlight: #fff3cd;
+    --green: #1a6b3a;
+    --tag-bg: #e8e4dc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  /* COVER PAGE */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 60px 80px;
+    border-bottom: 3px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 40%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 8px,
+      rgba(15,15,15,0.04) 8px,
+      rgba(15,15,15,0.04) 9px
+    );
+    pointer-events: none;
+  }
+
+  .cover-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .institution-block {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+
+  .doc-ref {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    line-height: 1.8;
+  }
+
+  .cover-center {
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .doc-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    display: inline-block;
+    padding: 6px 16px;
+    margin-bottom: 32px;
+  }
+
+  .cover-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 16px;
+    max-width: 700px;
+    margin: 0 auto 20px;
+  }
+
+  .cover-subtitle {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-bottom: 48px;
+  }
+
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: var(--accent);
+    margin: 24px auto;
+  }
+
+  .cover-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .cover-meta-item {
+    background: var(--paper);
+    padding: 16px 20px;
+    text-align: center;
+  }
+
+  .meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .cover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .actors-block {
+    display: flex;
+    gap: 16px;
+  }
+
+  .actor-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 14px;
+    letter-spacing: 0.05em;
+  }
+
+  .difficulty-block {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  .difficulty-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    padding: 4px 12px;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  /* DOCUMENT BODY */
+  .document {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 80px;
+  }
+
+  /* SECTION HEADERS */
+  .section {
+    margin-bottom: 72px;
+  }
+
+  .section-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .subsection-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 32px 0 12px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+
+  p { margin-bottom: 14px; color: #2a2520; }
+
+  /* CALLOUT BOXES */
+  .callout {
+    border: 1px solid var(--line);
+    padding: 20px 24px;
+    margin: 24px 0;
+    position: relative;
+    background: white;
+  }
+
+  .callout.problem {
+    border-left: 4px solid var(--accent);
+  }
+
+  .callout.solution {
+    border-left: 4px solid var(--green);
+  }
+
+  .callout.info {
+    border-left: 4px solid var(--accent2);
+  }
+
+  .callout-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .callout p { margin: 0; }
+
+  /* FEATURE CARDS */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 24px 0;
+  }
+
+  .feature-card {
+    background: var(--paper);
+    padding: 24px;
+  }
+
+  .feature-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--line);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .feature-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .feature-tags {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    color: var(--muted);
+    padding: 3px 8px;
+  }
+
+  /* FLOW DIAGRAM */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 24px 0;
+    border: 1px solid var(--line);
+  }
+
+  .flow-step {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    gap: 20px;
+  }
+
+  .flow-step:last-child { border-bottom: none; }
+
+  .flow-step:nth-child(odd) { background: white; }
+
+  .step-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--accent);
+    text-align: center;
+  }
+
+  .step-content {}
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .step-detail {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .step-actor {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid;
+  }
+
+  .step-actor.student { color: var(--accent2); border-color: var(--accent2); }
+  .step-actor.system { color: var(--accent); border-color: var(--accent); }
+  .step-actor.tech { color: var(--green); border-color: var(--green); }
+
+  /* TECH STACK TABLE */
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  .stack-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 10px 16px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .stack-table td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .stack-table tr:nth-child(even) td { background: white; }
+
+  .stack-table td:first-child {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent2);
+  }
+
+  /* TIMELINE */
+  .timeline {
+    margin: 24px 0;
+    border: 1px solid var(--line);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .timeline-item:last-child { border-bottom: none; }
+
+  .timeline-phase {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 16px 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .phase-week {
+    font-size: 10px;
+    color: rgba(245,242,236,0.5);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .phase-name {
+    font-weight: 500;
+    color: var(--paper);
+  }
+
+  .timeline-content {
+    padding: 16px 20px;
+    background: white;
+  }
+
+  .timeline-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .timeline-tasks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .timeline-task {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    background: var(--tag-bg);
+    color: var(--muted);
+    padding: 3px 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* RISK TABLE */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+
+  .risk-item {
+    border: 1px solid var(--line);
+    padding: 16px 20px;
+    background: white;
+  }
+
+  .risk-level {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: inline-block;
+    padding: 2px 8px;
+  }
+
+  .risk-level.high { background: #fde8e0; color: var(--accent); }
+  .risk-level.medium { background: #fff3cd; color: #8a6a00; }
+  .risk-level.low { background: #e0f0e8; color: var(--green); }
+
+  .risk-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .risk-mitigation {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+    font-style: italic;
+  }
+
+  /* REQUIREMENTS LIST */
+  .req-list {
+    list-style: none;
+    margin: 16px 0;
+  }
+
+  .req-list li {
+    display: flex;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: flex-start;
+  }
+
+  .req-list li:last-child { border-bottom: none; }
+
+  .req-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    min-width: 60px;
+    padding-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  .req-text {
+    font-size: 14px;
+    flex: 1;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .req-prio {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .req-prio.must { background: #fde8e0; color: var(--accent); }
+  .req-prio.should { background: #fff3cd; color: #8a6a00; }
+  .req-prio.could { background: #e0f0e8; color: var(--green); }
+
+  /* PAGE BREAKS for print */
+  .page-break { 
+    border-top: 1px dashed var(--line);
+    margin: 60px 0;
+  }
+
+  /* TOC */
+  .toc {
+    border: 1px solid var(--line);
+    padding: 32px 36px;
+    margin-bottom: 60px;
+    background: white;
+  }
+
+  .toc-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+
+  .toc-list {
+    list-style: none;
+  }
+
+  .toc-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--line);
+    font-size: 13px;
+  }
+
+  .toc-list li:last-child { border-bottom: none; }
+
+  .toc-section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    min-width: 30px;
+  }
+
+  .toc-section-name { flex: 1; padding: 0 12px; }
+
+  .toc-dots {
+    flex: 1;
+    border-bottom: 1px dotted var(--muted);
+    margin: 0 8px;
+    height: 1px;
+    align-self: center;
+  }
+
+  .toc-page {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- COVER PAGE -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="institution-block">
+      Université Gamal Abdel Nasser de Conakry<br>
+      Centre Informatique — Licence 3<br>
+      Développement Logiciel
+    </div>
+    <div class="doc-ref">
+      Réf. : CDC-CHAT-2025-07<br>
+      Version : 1.0<br>
+      Date : Mai 2025<br>
+      Statut : FINAL
+    </div>
+  </div>
+
+  <div class="cover-center">
+    <div class="doc-type">Cahier des Charges Fonctionnel</div>
+    <h1 class="cover-title">Chatbot de Signalement de Problèmes Informatiques</h1>
+    <p class="cover-subtitle">Système de déclaration et suivi des pannes — Centre Informatique de l'UGANC</p>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <span class="meta-label">Projet n°</span>
+        <span class="meta-value">07</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="meta-label">Difficulté</span>
+        <span class="meta-value">Moyenne</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="meta-label">Durée estimée</span>
+        <span class="meta-value">6 semaines</span>
+      </div>
+      <div class="cover-meta-item">
+        <span class="meta-label">Priorité</span>
+        <span class="meta-value">Haute</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="actors-block">
+      <span class="actor-tag">👤 Étudiants</span>
+      <span class="actor-tag">🔧 Techniciens</span>
+      <span class="actor-tag">⚙️ Admin</span>
+    </div>
+    <div class="difficulty-block">
+      <div>Type de livrable</div>
+      <div class="difficulty-badge">Application Web / Chatbot</div>
+    </div>
+  </div>
+</div>
+
+<!-- DOCUMENT BODY -->
+<div class="document">
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Sommaire</div>
+    <ul class="toc-list">
+      <li><span class="toc-section-num">01</span><span class="toc-section-name">Contexte & Problématique</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">02</span><span class="toc-section-name">Objectifs du Projet</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">03</span><span class="toc-section-name">Analyse des Acteurs & Besoins</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">04</span><span class="toc-section-name">Fonctionnalités Détaillées</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">05</span><span class="toc-section-name">Architecture & Flux Applicatif</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">06</span><span class="toc-section-name">Exigences Fonctionnelles</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">07</span><span class="toc-section-name">Stack Technique Recommandé</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">08</span><span class="toc-section-name">Plan de Développement</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">09</span><span class="toc-section-name">Risques & Contraintes</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+      <li><span class="toc-section-num">10</span><span class="toc-section-name">Critères de Validation</span><span class="toc-dots"></span><span class="toc-page">—</span></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 01 -->
+  <div class="section">
+    <span class="section-number">Section 01</span>
+    <h2 class="section-title">Contexte & Problématique</h2>
+
+    <p>Le Centre Informatique de l'Université Gamal Abdel Nasser de Conakry (UGANC) est responsable de la maintenance et du bon fonctionnement des équipements informatiques mis à disposition des étudiants et du personnel enseignant au sein de ses laboratoires et salles informatiques.</p>
+
+    <div class="callout problem">
+      <span class="callout-label">Problème identifié</span>
+      <p>Les pannes informatiques survenant dans les salles et laboratoires du Centre Informatique (postes de travail défaillants, imprimantes hors service, problèmes réseau, logiciels corrompus) ne sont actuellement ni déclarées de manière systématique, ni suivies efficacement. Il n'existe pas de canal formel et traçable entre l'usager et les techniciens du Centre.</p>
+    </div>
+
+    <p>Conséquences concrètes de ce manque d'outil :</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-title">Pannes ignorées</div>
+        <p class="feature-desc">Un étudiant découvre une panne, ne sait pas comment la signaler et passe à autre chose. La panne persiste des jours, voire des semaines.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-title">Signalements informels</div>
+        <p class="feature-desc">Les signalements se font oralement, par téléphone ou messagerie personnelle, sans traçabilité ni priorisation.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-title">Techniciens surchargés</div>
+        <p class="feature-desc">Les techniciens reçoivent des demandes désordonnées, sans catégorisation ni localisation précise, ce qui allonge les délais d'intervention.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-title">Aucun suivi</div>
+        <p class="feature-desc">L'étudiant n'est jamais informé de la prise en charge ni de la résolution de son problème. Aucun historique n'est conservé.</p>
+      </div>
+    </div>
+
+    <div class="callout solution">
+      <span class="callout-label">Solution proposée</span>
+      <p>Développer un <strong>chatbot conversationnel web</strong> permettant à tout étudiant de signaler une panne en quelques clics, avec attribution automatique au technicien compétent et suivi en temps réel du statut de la demande.</p>
+    </div>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 02 -->
+  <div class="section">
+    <span class="section-number">Section 02</span>
+    <h2 class="section-title">Objectifs du Projet</h2>
+
+    <h3 class="subsection-title">Objectifs principaux</h3>
+
+    <ul class="req-list">
+      <li>
+        <span class="req-id">OBJ-01</span>
+        <p class="req-text">Fournir un canal officiel, simple et accessible pour le signalement de pannes informatiques au sein du Centre Informatique de l'UGANC.</p>
+        <span class="req-prio must">Critique</span>
+      </li>
+      <li>
+        <span class="req-id">OBJ-02</span>
+        <p class="req-text">Assurer la traçabilité complète de chaque signalement, de sa création à sa résolution.</p>
+        <span class="req-prio must">Critique</span>
+      </li>
+      <li>
+        <span class="req-id">OBJ-03</span>
+        <p class="req-text">Réduire le temps de résolution des pannes grâce à une meilleure organisation des interventions.</p>
+        <span class="req-prio must">Critique</span>
+      </li>
+      <li>
+        <span class="req-id">OBJ-04</span>
+        <p class="req-text">Informer l'étudiant en temps réel du statut de sa demande sans qu'il ait à relancer quiconque.</p>
+        <span class="req-prio should">Important</span>
+      </li>
+      <li>
+        <span class="req-id">OBJ-05</span>
+        <p class="req-text">Constituer une base de données des incidents pour anticiper les pannes récurrentes.</p>
+        <span class="req-prio could">Utile</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SECTION 03 -->
+  <div class="section">
+    <span class="section-number">Section 03</span>
+    <h2 class="section-title">Analyse des Acteurs & Besoins</h2>
+
+    <h3 class="subsection-title">Acteur 1 — L'Étudiant (Utilisateur Principal)</h3>
+
+    <div class="callout info">
+      <span class="callout-label">Profil utilisateur</span>
+      <p>Tout étudiant inscrit à l'UGANC utilisant les équipements informatiques du Centre Informatique (laboratoires, salles de TP, salle de cours équipées). Niveau de compétence technique variable. Accès via smartphone ou poste de travail du Centre.</p>
+    </div>
+
+    <ul class="req-list">
+      <li><span class="req-id">BES-E01</span><p class="req-text">Signaler une panne rapidement, sans procédure complexe.</p></li>
+      <li><span class="req-id">BES-E02</span><p class="req-text">Savoir si sa demande a été reçue et prise en charge.</p></li>
+      <li><span class="req-id">BES-E03</span><p class="req-text">Être notifié lorsque le problème est résolu.</p></li>
+      <li><span class="req-id">BES-E04</span><p class="req-text">Consulter l'historique de ses anciens signalements.</p></li>
+    </ul>
+
+    <h3 class="subsection-title">Acteur 2 — Le Technicien (Utilisateur Opérationnel)</h3>
+
+    <div class="callout info">
+      <span class="callout-label">Profil utilisateur</span>
+      <p>Personnel technique rattaché exclusivement au Centre Informatique de l'UGANC. Reçoit, traite et clôture les demandes d'intervention sur les équipements du Centre. Accès via dashboard web dédié.</p>
+    </div>
+
+    <ul class="req-list">
+      <li><span class="req-id">BES-T01</span><p class="req-text">Voir toutes les pannes signalées, triées par priorité et localisation.</p></li>
+      <li><span class="req-id">BES-T02</span><p class="req-text">Mettre à jour le statut d'une demande (En cours / Résolu / En attente de pièce).</p></li>
+      <li><span class="req-id">BES-T03</span><p class="req-text">Communiquer avec l'étudiant via le chatbot si besoin d'informations complémentaires.</p></li>
+      <li><span class="req-id">BES-T04</span><p class="req-text">Avoir une vue statistique des pannes récurrentes par salle ou type d'équipement.</p></li>
+    </ul>
+
+    <h3 class="subsection-title">Acteur 3 — L'Administrateur (Utilisateur de Supervision)</h3>
+
+    <ul class="req-list">
+      <li><span class="req-id">BES-A01</span><p class="req-text">Gérer les comptes techniciens et étudiants.</p></li>
+      <li><span class="req-id">BES-A02</span><p class="req-text">Consulter les rapports d'activité et les statistiques globales.</p></li>
+      <li><span class="req-id">BES-A03</span><p class="req-text">Configurer les types de problèmes et les salles disponibles.</p></li>
+    </ul>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 04 -->
+  <div class="section">
+    <span class="section-number">Section 04</span>
+    <h2 class="section-title">Fonctionnalités Détaillées</h2>
+
+    <h3 class="subsection-title">F1 — Choix du type de problème</h3>
+    <p>Le chatbot propose à l'étudiant un menu structuré de catégories de pannes, limité aux équipements et infrastructures gérés par le Centre Informatique. Ce n'est pas un champ texte libre mais un système guidé par menus pour éviter les descriptions imprécises.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-title">🖥️ Matériel</div>
+        <p class="feature-desc">Écran défaillant, clavier/souris hors service, poste qui ne démarre pas, alimentation défectueuse, lecteur CD/USB cassé.</p>
+        <div class="feature-tags">
+          <span class="tag">Hardware</span>
+          <span class="tag">Priorité haute</span>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">💿 Logiciel</div>
+        <p class="feature-desc">Application qui ne s'ouvre pas, système d'exploitation corrompu, virus détecté, problème d'impression, pilote manquant.</p>
+        <div class="feature-tags">
+          <span class="tag">Software</span>
+          <span class="tag">Priorité moyenne</span>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">🌐 Réseau / Internet</div>
+        <p class="feature-desc">Pas de connexion Wi-Fi, réseau lent, câble réseau débranché, accès à certains sites bloqué.</p>
+        <div class="feature-tags">
+          <span class="tag">Réseau</span>
+          <span class="tag">Priorité haute</span>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-title">🖨️ Périphériques</div>
+        <p class="feature-desc">Imprimante hors service, scanner non détecté, vidéoprojecteur défaillant, prise électrique manquante.</p>
+        <div class="feature-tags">
+          <span class="tag">Périphérique</span>
+          <span class="tag">Priorité variable</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-label">Logique de fonctionnement</span>
+      <p>Chaque catégorie déclenche une série de sous-questions du chatbot pour affiner le diagnostic. Exemple : si "Matériel" → "Quel équipement est concerné ?" → "Depuis combien de temps ?" → "Avez-vous déjà signalé ce problème ?"</p>
+    </div>
+
+    <h3 class="subsection-title">F2 — Localisation de la panne</h3>
+    <p>L'étudiant indique précisément l'emplacement de la panne dans les locaux du Centre Informatique afin de permettre au technicien d'intervenir directement sans perte de temps.</p>
+
+    <ul class="req-list">
+      <li><span class="req-id">F2.1</span><p class="req-text">Sélection de la salle ou du laboratoire du Centre Informatique concerné (menu déroulant pré-configuré par l'admin).</p></li>
+      <li><span class="req-id">F2.2</span><p class="req-text">Numéro ou nom du poste de travail concerné (si applicable) — champ texte court.</p></li>
+      <li><span class="req-id">F2.3</span><p class="req-text">Description complémentaire libre (optionnelle, max. 200 caractères).</p></li>
+      <li><span class="req-id">F2.4</span><p class="req-text">Photo de la panne (upload optionnel, JPG/PNG, max. 2MB).</p></li>
+    </ul>
+
+    <h3 class="subsection-title">F3 — Suivi du statut</h3>
+    <p>Chaque signalement est associé à un identifiant unique (ticket). L'étudiant peut consulter le statut en temps réel depuis le chatbot ou par notification.</p>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Soumis</div>
+          <div class="step-detail">Ticket créé, en attente d'assignation</div>
+        </div>
+        <span class="step-actor system">Système</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Assigné</div>
+          <div class="step-detail">Un technicien a pris en charge la demande</div>
+        </div>
+        <span class="step-actor tech">Technicien</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">En cours</div>
+          <div class="step-detail">Intervention en cours sur le site</div>
+        </div>
+        <span class="step-actor tech">Technicien</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">En attente</div>
+          <div class="step-detail">En attente de pièce ou d'information complémentaire</div>
+        </div>
+        <span class="step-actor tech">Technicien</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">05</div>
+        <div class="step-content">
+          <div class="step-title">Résolu ✓</div>
+          <div class="step-detail">Panne résolue, ticket clôturé — évaluation demandée à l'étudiant</div>
+        </div>
+        <span class="step-actor student">Étudiant</span>
+      </div>
+    </div>
+
+    <h3 class="subsection-title">F4 — Dashboard Technicien</h3>
+    <p>Interface dédiée aux techniciens du Centre Informatique pour gérer les tickets entrants. Accessible via un login sécurisé distinct de l'interface étudiant.</p>
+
+    <ul class="req-list">
+      <li><span class="req-id">F4.1</span><p class="req-text">Vue liste de tous les tickets ouverts, triés par date et priorité.</p></li>
+      <li><span class="req-id">F4.2</span><p class="req-text">Filtres par : type de panne, salle, statut, technicien assigné.</p></li>
+      <li><span class="req-id">F4.3</span><p class="req-text">Bouton d'action rapide : "Prendre en charge" / "Marquer résolu" / "Demander info".</p></li>
+      <li><span class="req-id">F4.4</span><p class="req-text">Historique complet des interventions par salle et par équipement.</p></li>
+      <li><span class="req-id">F4.5</span><p class="req-text">Statistiques : nombre de tickets/semaine, temps moyen de résolution, taux de résolution.</p></li>
+    </ul>
+
+    <h3 class="subsection-title">F5 — Système de Notifications</h3>
+    <ul class="req-list">
+      <li><span class="req-id">F5.1</span><p class="req-text">Notification in-app lors de chaque changement de statut du ticket.</p></li>
+      <li><span class="req-id">F5.2</span><p class="req-text">Notification par e-mail (si adresse renseignée dans le profil étudiant).</p></li>
+      <li><span class="req-id">F5.3</span><p class="req-text">Alerte technicien lors de chaque nouveau ticket soumis.</p></li>
+      <li><span class="req-id">F5.4</span><p class="req-text">Rappel automatique si un ticket reste "Soumis" sans prise en charge après 24h.</p></li>
+    </ul>
+
+    <h3 class="subsection-title">F6 — Évaluation & Feedback</h3>
+    <p>Après clôture d'un ticket, le chatbot sollicite une évaluation de la satisfaction de l'étudiant. Simple, rapide : 3 émojis (👍 Satisfait / 😐 Moyen / 👎 Insatisfait) + commentaire optionnel.</p>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 05 -->
+  <div class="section">
+    <span class="section-number">Section 05</span>
+    <h2 class="section-title">Architecture & Flux Applicatif</h2>
+
+    <h3 class="subsection-title">Vue d'ensemble de l'architecture</h3>
+
+    <div class="callout info">
+      <span class="callout-label">Architecture recommandée</span>
+      <p><strong>Architecture 3 couches :</strong> Frontend (interface chatbot + dashboard) → Backend API (logique métier, gestion des tickets, notifications) → Base de données (stockage des tickets, utilisateurs, historique).</p>
+    </div>
+
+    <h3 class="subsection-title">Flux principal — Signalement d'une panne</h3>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Authentification</div>
+          <div class="step-detail">L'étudiant se connecte avec son numéro étudiant + mot de passe</div>
+        </div>
+        <span class="step-actor student">Étudiant</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Ouverture du Chatbot</div>
+          <div class="step-detail">Message d'accueil : "Bonjour ! Quel type de problème avez-vous ?"</div>
+        </div>
+        <span class="step-actor system">Système</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Sélection du type de panne</div>
+          <div class="step-detail">L'étudiant choisit parmi les catégories proposées (boutons cliquables)</div>
+        </div>
+        <span class="step-actor student">Étudiant</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Questions de précision</div>
+          <div class="step-detail">Le chatbot pose 2-3 questions ciblées selon la catégorie choisie</div>
+        </div>
+        <span class="step-actor system">Système</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Localisation</div>
+          <div class="step-detail">Sélection du bâtiment, de la salle, du numéro de poste</div>
+        </div>
+        <span class="step-actor student">Étudiant</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Création du Ticket</div>
+          <div class="step-detail">Le système génère un ticket #ID unique et l'enregistre en base</div>
+        </div>
+        <span class="step-actor system">Système</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">7</div>
+        <div class="step-content">
+          <div class="step-title">Notification Technicien</div>
+          <div class="step-detail">Alerte envoyée au technicien compétent selon le type de panne</div>
+        </div>
+        <span class="step-actor system">Système</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">8</div>
+        <div class="step-content">
+          <div class="step-title">Traitement & Résolution</div>
+          <div class="step-detail">Le technicien intervient et met à jour le statut</div>
+        </div>
+        <span class="step-actor tech">Technicien</span>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">9</div>
+        <div class="step-content">
+          <div class="step-title">Évaluation</div>
+          <div class="step-detail">L'étudiant est notifié et peut évaluer la résolution</div>
+        </div>
+        <span class="step-actor student">Étudiant</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 06 -->
+  <div class="section">
+    <span class="section-number">Section 06</span>
+    <h2 class="section-title">Exigences Fonctionnelles</h2>
+
+    <h3 class="subsection-title">Exigences Must Have (Obligatoires)</h3>
+    <ul class="req-list">
+      <li><span class="req-id">EF-01</span><p class="req-text">Le système doit permettre la création d'un ticket de signalement via une interface chatbot.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">EF-02</span><p class="req-text">Chaque ticket doit avoir un identifiant unique et un statut visible par l'étudiant.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">EF-03</span><p class="req-text">Le technicien doit pouvoir consulter et modifier le statut des tickets depuis un dashboard.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">EF-04</span><p class="req-text">Le système doit proposer au minimum 4 catégories de types de problèmes.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">EF-05</span><p class="req-text">La localisation (salle/bâtiment) doit être renseignée pour chaque signalement.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">EF-06</span><p class="req-text">L'authentification est obligatoire pour les deux types d'utilisateurs (étudiant, technicien).</p><span class="req-prio must">Must</span></li>
+    </ul>
+
+    <h3 class="subsection-title">Exigences Should Have (Importantes)</h3>
+    <ul class="req-list">
+      <li><span class="req-id">EF-07</span><p class="req-text">Notifications in-app lors des changements de statut.</p><span class="req-prio should">Should</span></li>
+      <li><span class="req-id">EF-08</span><p class="req-text">Possibilité d'uploader une photo de la panne.</p><span class="req-prio should">Should</span></li>
+      <li><span class="req-id">EF-09</span><p class="req-text">Système d'évaluation de la résolution.</p><span class="req-prio should">Should</span></li>
+      <li><span class="req-id">EF-10</span><p class="req-text">Tableau de bord statistique pour l'administrateur.</p><span class="req-prio should">Should</span></li>
+    </ul>
+
+    <h3 class="subsection-title">Exigences Could Have (Souhaitables)</h3>
+    <ul class="req-list">
+      <li><span class="req-id">EF-11</span><p class="req-text">Chatbot avec intelligence artificielle pour suggérer des solutions courantes avant la soumission.</p><span class="req-prio could">Could</span></li>
+      <li><span class="req-id">EF-12</span><p class="req-text">Notifications par SMS pour les techniciens.</p><span class="req-prio could">Could</span></li>
+      <li><span class="req-id">EF-13</span><p class="req-text">Export des rapports au format PDF/Excel.</p><span class="req-prio could">Could</span></li>
+    </ul>
+  </div>
+
+  <div class="page-break"></div>
+
+  <!-- SECTION 07 -->
+  <div class="section">
+    <span class="section-number">Section 07</span>
+    <h2 class="section-title">Stack Technique Recommandé</h2>
+
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Couche</th>
+          <th>Technologie</th>
+          <th>Justification</th>
+          <th>Alternative</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Frontend UI</td>
+          <td>Vue.js 3 + Vite + Tailwind CSS</td>
+          <td>Réactivité, rapidité de développement, adapté SPA</td>
+          <td>React.js</td>
+        </tr>
+        <tr>
+          <td>Chatbot Widget</td>
+          <td>Composant Vue custom (bulles de chat)</td>
+          <td>Intégration native, contrôle total du flux conversationnel</td>
+          <td>Botpress (libre)</td>
+        </tr>
+        <tr>
+          <td>Backend API</td>
+          <td>FastAPI (Python)</td>
+          <td>Rapide, documentation auto Swagger, facile à déployer</td>
+          <td>Node.js + Express</td>
+        </tr>
+        <tr>
+          <td>Base de données</td>
+          <td>Supabase (PostgreSQL)</td>
+          <td>Open source, Realtime intégré pour le suivi live, Auth incluse</td>
+          <td>MySQL local</td>
+        </tr>
+        <tr>
+          <td>Authentification</td>
+          <td>Supabase Auth (JWT)</td>
+          <td>Gestion des rôles native (étudiant / technicien / admin)</td>
+          <td>JWT maison</td>
+        </tr>
+        <tr>
+          <td>Notifications</td>
+          <td>Supabase Realtime + Email (SMTP)</td>
+          <td>Temps réel sans polling, email via serveur SMTP du Centre Informatique</td>
+          <td>Firebase</td>
+        </tr>
+        <tr>
+          <td>Upload fichiers</td>
+          <td>Supabase Storage</td>
+          <td>Intégré à la stack, quota gratuit suffisant</td>
+          <td>Cloudinary</td>
+        </tr>
+        <tr>
+          <td>Déploiement</td>
+          <td>Vercel (Frontend) + Railway (Backend)</td>
+          <td>Gratuit, CI/CD automatique depuis GitHub</td>
+          <td>Hébergement local Centre Informatique</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 08 -->
+  <div class="section">
+    <span class="section-number">Section 08</span>
+    <h2 class="section-title">Plan de Développement</h2>
+
+    <div class="callout info">
+      <span class="callout-label">Méthode</span>
+      <p>Développement Agile en sprints d'une semaine. Priorité : fonctionnalités Must Have en premier, livrables testables à chaque fin de sprint.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-phase">
+          <div class="phase-week">Semaine 1</div>
+          <div class="phase-name">Sprint 0<br>Setup & Conception</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Initialisation du projet</div>
+          <div class="timeline-tasks">
+            <span class="timeline-task">Maquettes wireframe (Figma)</span>
+            <span class="timeline-task">Modèle de données BDD</span>
+            <span class="timeline-task">Setup Supabase + tables</span>
+            <span class="timeline-task">Arborescence projet Git</span>
+            <span class="timeline-task">Définition des routes API</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">
+          <div class="phase-week">Semaine 2</div>
+          <div class="phase-name">Sprint 1<br>Auth & Chatbot</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Authentification + Interface Chatbot</div>
+          <div class="timeline-tasks">
+            <span class="timeline-task">Page de connexion étudiant/technicien</span>
+            <span class="timeline-task">Composant chatbot (bulles + boutons)</span>
+            <span class="timeline-task">Flux de questions (type panne)</span>
+            <span class="timeline-task">Gestion des rôles JWT</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">
+          <div class="phase-week">Semaine 3</div>
+          <div class="phase-name">Sprint 2<br>Tickets & API</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Création et gestion des tickets</div>
+          <div class="timeline-tasks">
+            <span class="timeline-task">API POST /tickets (création)</span>
+            <span class="timeline-task">API GET /tickets (liste + détail)</span>
+            <span class="timeline-task">API PATCH /tickets/:id/status</span>
+            <span class="timeline-task">Upload photo (Supabase Storage)</span>
+            <span class="timeline-task">Localisation (bâtiment/salle)</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">
+          <div class="phase-week">Semaine 4</div>
+          <div class="phase-name">Sprint 3<br>Dashboard Tech</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Interface technicien + notifications</div>
+          <div class="timeline-tasks">
+            <span class="timeline-task">Dashboard liste des tickets</span>
+            <span class="timeline-task">Filtres (type, statut, salle)</span>
+            <span class="timeline-task">Actions rapides (Prendre en charge)</span>
+            <span class="timeline-task">Notifications Realtime</span>
+            <span class="timeline-task">Notifications email SMTP</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">
+          <div class="phase-week">Semaine 5</div>
+          <div class="phase-name">Sprint 4<br>Suivi & Feedback</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Suivi statut + évaluation</div>
+          <div class="timeline-tasks">
+            <span class="timeline-task">Page "Mes tickets" étudiant</span>
+            <span class="timeline-task">Historique des signalements</span>
+            <span class="timeline-task">Système d'évaluation 3 niveaux</span>
+            <span class="timeline-task">Dashboard admin (stats)</span>
+            <span class="timeline-task">Rappels automatiques 24h</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-phase">
+          <div class="phase-week">Semaine 6</div>
+          <div class="phase-name">Sprint 5<br>Tests & Déploiement</div>
+        </div>
+        <div class="timeline-content">
+          <div class="timeline-title">Tests, corrections & mise en production</div>
+          <div class="timeline-tasks">
+            <span class="timeline-task">Tests fonctionnels complets</span>
+            <span class="timeline-task">Tests de charge</span>
+            <span class="timeline-task">Corrections de bugs</span>
+            <span class="timeline-task">Déploiement Vercel + Railway</span>
+            <span class="timeline-task">Documentation technique</span>
+            <span class="timeline-task">Livraison + présentation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 09 -->
+  <div class="section">
+    <span class="section-number">Section 09</span>
+    <h2 class="section-title">Risques & Contraintes</h2>
+
+    <div class="risk-grid">
+      <div class="risk-item">
+        <span class="risk-level high">Risque Élevé</span>
+        <div class="risk-title">Connexion Internet instable au Centre Informatique</div>
+        <p class="risk-mitigation">→ Prévoir un mode hors-ligne partiel (formulaire local synchronisé à la reconnexion).</p>
+      </div>
+      <div class="risk-item">
+        <span class="risk-level high">Risque Élevé</span>
+        <div class="risk-title">Faible adoption par les usagers du Centre Informatique</div>
+        <p class="risk-mitigation">→ Interface ultra-simple (max 3 clics pour soumettre), campagne de communication interne.</p>
+      </div>
+      <div class="risk-item">
+        <span class="risk-level medium">Risque Moyen</span>
+        <div class="risk-title">Données utilisateurs incomplètes (sans e-mail)</div>
+        <p class="risk-mitigation">→ Notifications in-app comme canal principal, email optionnel.</p>
+      </div>
+      <div class="risk-item">
+        <span class="risk-level medium">Risque Moyen</span>
+        <div class="risk-title">Surcharge de tickets non traités</div>
+        <p class="risk-mitigation">→ Système de priorité automatique et alertes escalade si ticket non pris en charge.</p>
+      </div>
+      <div class="risk-item">
+        <span class="risk-level low">Risque Faible</span>
+        <div class="risk-title">Tickets doublons pour la même panne</div>
+        <p class="risk-mitigation">→ Détection de doublons par localisation + type + fenêtre temporelle de 2h.</p>
+      </div>
+      <div class="risk-item">
+        <span class="risk-level low">Risque Faible</span>
+        <div class="risk-title">Délais de développement</div>
+        <p class="risk-mitigation">→ Architecture modulaire, priorisation Must Have, features optionnelles en V2.</p>
+      </div>
+    </div>
+
+    <h3 class="subsection-title">Contraintes Techniques</h3>
+    <ul class="req-list">
+      <li><span class="req-id">CT-01</span><p class="req-text">L'application doit fonctionner sur navigateurs modernes (Chrome, Firefox, Edge) sans installation.</p></li>
+      <li><span class="req-id">CT-02</span><p class="req-text">L'interface doit être responsive (accessible depuis smartphone).</p></li>
+      <li><span class="req-id">CT-03</span><p class="req-text">Temps de chargement initial inférieur à 3 secondes sur connexion 3G.</p></li>
+      <li><span class="req-id">CT-04</span><p class="req-text">Les données des utilisateurs doivent être stockées conformément aux règles de confidentialité du Centre Informatique et de l'institution.</p></li>
+    </ul>
+  </div>
+
+  <!-- SECTION 10 -->
+  <div class="section">
+    <span class="section-number">Section 10</span>
+    <h2 class="section-title">Critères de Validation</h2>
+
+    <div class="callout solution">
+      <span class="callout-label">Le projet sera considéré comme livré et validé si</span>
+      <p>L'ensemble des critères Must Have ci-dessous sont vérifiés lors de la démonstration finale.</p>
+    </div>
+
+    <ul class="req-list">
+      <li><span class="req-id">VAL-01</span><p class="req-text">Un étudiant peut créer un ticket de signalement complet (type + localisation + description) en moins de 2 minutes.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">VAL-02</span><p class="req-text">Le ticket apparaît immédiatement dans le dashboard du technicien après soumission.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">VAL-03</span><p class="req-text">Le technicien peut changer le statut d'un ticket et l'étudiant voit la mise à jour en moins de 5 secondes.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">VAL-04</span><p class="req-text">L'historique des tickets est accessible et complet pour chaque utilisateur.</p><span class="req-prio must">Must</span></li>
+      <li><span class="req-id">VAL-05</span><p class="req-text">L'application est accessible depuis un smartphone sans défaut d'affichage.</p><span class="req-prio should">Should</span></li>
+      <li><span class="req-id">VAL-06</span><p class="req-text">Le système de notification in-app fonctionne pour les deux acteurs.</p><span class="req-prio should">Should</span></li>
+    </ul>
+
+    <div class="callout problem" style="margin-top: 48px;">
+      <span class="callout-label">Note de clôture</span>
+      <p>Ce cahier des charges constitue le document de référence pour le développement du projet n°7, destiné exclusivement au Centre Informatique de l'UGANC. Il est susceptible d'évoluer au cours des premières semaines du projet. Toute modification substantielle doit faire l'objet d'un avenant validé par l'équipe projet et l'encadrant.</p>
+    </div>
+
+    <div style="margin-top: 60px; padding-top: 24px; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px;">Document rédigé par</div>
+        <div style="font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;">Groupe Projet — Licence 3 Informatique</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted);">UGANC — Centre Informatique</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px;">Version</div>
+        <div style="font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;">1.0 — Mai 2025</div>
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted);">CDC-CHAT-2025-07</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
