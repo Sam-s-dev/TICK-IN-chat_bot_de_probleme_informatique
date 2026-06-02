@@ -1,33 +1,35 @@
-# TICK'IN ÔÇö Chatbot de Signalement de Probl├¿mes Informatiques
+# TICK'IN — Chatbot de Signalement de Problèmes Informatiques
 
-Plateforme de signalement et de gestion des incidents informatiques pour le **Centre Informatique de l'UGANC** (Universit├® de Gam Abdel Nasser de Conakry).
+Plateforme de signalement et de gestion des incidents informatiques pour le **Centre Informatique de l'UGANC** (Université Gamal Abdel Nasser de Conakry).
 
 ## Architecture
 
 ```
-ÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ
-Ôöé                    Frontend (Vue 3 + Vite)                    Ôöé
-Ôöé                    localhost:5173                             Ôöé
-ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö¼ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ
-                       Ôöé HTTP REST + WebSocket
-ÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔû╝ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ
-Ôöé              Backend (FastAPI ÔÇö Python 3.11)                   Ôöé
-Ôöé              http://localhost:8000                             Ôöé
-Ôöé              Swagger : http://localhost:8000/api/docs          Ôöé
-ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö¼ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ
-                       Ôöé SQL (PyMySQL)
-ÔöîÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔû╝ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÉ
-Ôöé          Base de Donn├®es (MySQL 8.0 ÔÇö Docker)                  Ôöé
-Ôöé          Port: 3306                                            Ôöé
-Ôöé          phpMyAdmin: http://localhost:8080                     Ôöé
-ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÿ
+┌───────────────────────────────────────────────────────────┐
+│                 Frontend (Vue 3 + Vite)                   │
+│                 localhost:5173                            │
+└─────────────────────────────┬─────────────────────────────┘
+                              │ HTTP REST + WebSocket
+                              ▼
+┌─────────────────────────────┴─────────────────────────────┐
+│              Backend (FastAPI — Python 3.11)              │
+│              http://localhost:8000                        │
+│              Swagger : http://localhost:8000/api/docs     │
+└─────────────────────────────┬─────────────────────────────┘
+                              │ SQL (PyMySQL)
+                              ▼
+┌─────────────────────────────┴─────────────────────────────┐
+│          Base de Données (MySQL 8.0 — Docker)             │
+│          Port: 3306                                       │
+│          phpMyAdmin: http://localhost:8080                │
+└───────────────────────────────────────────────────────────┘
 ```
 
-## Pr├®requis
+## Prérequis
 
 - **Python 3.11+** (backend)
 - **Node.js 18+** (frontend)
-- **Docker Desktop** (base de donn├®es MySQL)
+- **Docker Desktop** (base de données MySQL)
 - **Git**
 
 ## Installation rapide
@@ -39,9 +41,9 @@ git clone https://github.com/Sam-s-dev/TICK-IN-chat_bot_de_probleme_informatique
 cd TICK-IN-chat_bot_de_probleme_informatique
 ```
 
-> ÔÜá´©Å **Branche par d├®faut :** `dev` ÔÇö toute collaboration se fait sur `dev`.
+> ⚠️ **Branche par défaut :** `dev` — toute collaboration se fait sur `dev`.
 
-### 2. D├®marrer la base de donn├®es (Docker)
+### 2. Démarrer la base de données (Docker)
 
 ```bash
 cd database
@@ -63,7 +65,7 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
-├ëditez `.env` si n├®cessaire (par d├®faut, les identifiants correspondent au docker-compose).
+Éditez `.env` si nécessaire (par défaut, les identifiants correspondent au docker-compose).
 
 ### 4. Configurer l'environnement frontend
 
@@ -74,140 +76,141 @@ npm install
 
 ### 5. Lancer l'application
 
-**Terminal 1 ÔÇö Backend :**
+**Terminal 1 — Backend :**
 ```bash
 cd backend
 .\venv\Scripts\activate
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-**Terminal 2 ÔÇö Frontend :**
+**Terminal 2 — Frontend :**
 ```bash
 cd frontend
 npm run dev
 ```
 
-Ô×í´©Å Ouvrir `http://localhost:5173`
+🌐 Ouvrir `http://localhost:5173`
 
-## Donn├®es de d├®monstration
+## Données de démonstration
 
-La base de donn├®es est pr├®-initialis├®e avec des donn├®es de test (voir `database/init/02-seed.sql`).
+La base de données est pré-initialisée avec des données de test (voir `database/init/02-seed.sql`).
 
 ### Comptes disponibles
 
 Tous les mots de passe : **`password123`**
 
-| R├┤le | Email | Identit├® |
+| Rôle | Email | Identité |
 |---|---|---|
 | **Admin** | `admin@centre-info.uganc.edu.gn` | Moussa Kaba |
 | **Technicien** | `alpha.diallo@centre-info.uganc.edu.gn` | Alpha Oumar Diallo |
-| **Technicien** | `sekou.conde@centre-info.uganc.edu.gn` | S├®kou Cond├® |
+| **Technicien** | `sekou.conde@centre-info.uganc.edu.gn` | Sékou Condé |
 | **Technicien** | `kadiatou.sylla@centre-info.uganc.edu.gn` | Kadiatou Sylla |
-| **├ëtudiant** | `fatoumata.diallo@uganc.edu.gn` | Fatoumata Diallo |
-| **├ëtudiant** | `mamadou.bah@uganc.edu.gn` | Mamadou Bah |
-| **├ëtudiant** | `aminata.sow@uganc.edu.gn` | Aminata Sow |
-| **├ëtudiant** | `ibrahima.camara@uganc.edu.gn` | Ibrahima Camara |
-| **├ëtudiant** | `mariame.barry@uganc.edu.gn` | Mariame Barry |
+| **Étudiant** | `fatoumata.diallo@uganc.edu.gn` | Fatoumata Diallo |
+| **Étudiant** | `mamadou.bah@uganc.edu.gn` | Mamadou Bah |
+| **Étudiant** | `aminata.sow@uganc.edu.gn` | Aminata Sow |
+| **Étudiant** | `ibrahima.camara@uganc.edu.gn` | Ibrahima Camara |
+| **Étudiant** | `mariame.barry@uganc.edu.gn` | Mariame Barry |
 
 ### Tickets de test
 
-Un ticket de d├®monstration pr├®-existe (cr├®├® par Ibrahima Camara, assign├® ├á Kadiatou Sylla, statut "R├®solu").
+Un ticket de démonstration pré-existe (créé par Ibrahima Camara, assigné à Kadiatou Sylla, statut "Résolu").
 
 ## Structure du projet
 
 ```
-Ôö£ÔöÇÔöÇ backend/
-Ôöé   Ôö£ÔöÇÔöÇ app/
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ main.py              # Point d'entr├®e FastAPI
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ config.py            # Configuration (JWT, DB, etc.)
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ database.py          # Connexion MySQL / session SQLAlchemy
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ dependencies.py      # D├®pendances (auth, permissions)
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ models/              # Mod├¿les SQLAlchemy
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ routers/             # Endpoints API REST
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ schemas/             # Sch├®mas Pydantic (validation)
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ services/            # Logique m├®tier
-Ôöé   Ôöé   ÔööÔöÇÔöÇ uploads/             # Fichiers upload├®s (audio, pi├¿ces jointes)
-Ôöé   Ôö£ÔöÇÔöÇ .env.example             # Variables d'environnement (├á copier en .env)
-Ôöé   ÔööÔöÇÔöÇ requirements.txt
-Ôöé
-Ôö£ÔöÇÔöÇ frontend/
-Ôöé   Ôö£ÔöÇÔöÇ src/
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ components/          # Composants Vue r├®utilisables
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ composables/         # Composables Vue (useNotifications, etc.)
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ router/              # Configuration Vue Router
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ services/            # Services HTTP, WebSocket
-Ôöé   Ôöé   Ôö£ÔöÇÔöÇ views/               # Pages par r├┤le (admin/, technicien/, etudiant/)
-Ôöé   Ôöé   ÔööÔöÇÔöÇ App.vue
-Ôöé   Ôö£ÔöÇÔöÇ index.html
-Ôöé   ÔööÔöÇÔöÇ package.json
-Ôöé
-Ôö£ÔöÇÔöÇ database/
-Ôöé   Ôö£ÔöÇÔöÇ docker-compose.yml       # MySQL + phpMyAdmin
-Ôöé   Ôö£ÔöÇÔöÇ .env.example             # Variables d'environnement MySQL
-Ôöé   ÔööÔöÇÔöÇ init/                    # Scripts SQL d'initialisation
-Ôöé       Ôö£ÔöÇÔöÇ 01-schema.sql        # Sch├®ma complet
-Ôöé       Ôö£ÔöÇÔöÇ 02-seed.sql          # Donn├®es de d├®monstration
-Ôöé       Ôö£ÔöÇÔöÇ 03-migration.sql     # Migrations
-Ôöé       ÔööÔöÇÔöÇ 04-landing-data.sql  # Donn├®es landing page
-Ôöé
-Ôö£ÔöÇÔöÇ .gitignore
-ÔööÔöÇÔöÇ README.md
+├── backend/
+│   ├── app/
+│   │   ├── main.py              # Point d'entrée FastAPI
+│   │   ├── config.py            # Configuration (JWT, DB, etc.)
+│   │   ├── database.py          # Connexion MySQL / session SQLAlchemy
+│   │   ├── dependencies.py      # Dépendances (auth, permissions)
+│   │   ├── models/              # Modèles SQLAlchemy
+│   │   ├── routers/             # Endpoints API REST
+│   │   ├── schemas/             # Schémas Pydantic (validation)
+│   │   ├── services/            # Logique métier
+│   │   └── uploads/             # Fichiers uploadés (audio, pièces jointes)
+│   ├── .env.example             # Variables d'environnement (à copier en .env)
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/          # Composants Vue réutilisables
+│   │   ├── composables/         # Composables Vue (useNotifications, etc.)
+│   │   ├── router/              # Configuration Vue Router
+│   │   ├── services/            # Services HTTP, WebSocket
+│   │   └── views/               # Pages par rôle (admin/, technicien/, etudiant/)
+│   ├── App.vue
+│   ├── index.html
+│   └── package.json
+│
+├── database/
+│   ├── docker-compose.yml       # MySQL + phpMyAdmin
+│   ├── .env.example             # Variables d'environnement MySQL
+│   └── init/                    # Scripts SQL d'initialisation
+│       ├── 01-schema.sql        # Schéma complet
+│       ├── 02-seed.sql          # Données de démonstration
+│       ├── 03-migration.sql     # Migrations
+│       └── 04-landing-data.sql  # Données landing page
+│
+├── .gitignore
+└── README.md
 ```
 
 ## API REST
 
-Documentation Swagger accessible ├á : `http://localhost:8000/api/docs`
+Documentation Swagger accessible à : `http://localhost:8000/api/docs`
 
-### Points d'entr├®e principaux
+### Points d'entrée principaux
 
-| M├®thode | Endpoint | Description |
+| Méthode | Endpoint | Description |
 |---|---|---|
 | POST | `/api/auth/login` | Connexion |
-| POST | `/api/auth/register` | Inscription ├®tudiant |
-| GET | `/api/auth/me` | Profil connect├® |
-| POST | `/api/tickets/` | Cr├®er un ticket (├®tudiant) |
+| POST | `/api/auth/register` | Inscription étudiant |
+| GET | `/api/auth/me` | Profil connecté |
+| POST | `/api/tickets/` | Créer un ticket (étudiant) |
 | GET | `/api/tickets/` | Lister les tickets |
-| GET | `/api/tickets/{id}` | D├®tail d'un ticket |
+| GET | `/api/tickets/{id}` | Détail d'un ticket |
 | PATCH | `/api/tickets/{id}/status` | Changer le statut |
 | PATCH | `/api/tickets/{id}/assign` | Assigner un technicien |
 | GET | `/api/messages/{ticket_id}` | Messages d'un ticket |
 | POST | `/api/messages/{ticket_id}` | Envoyer un message |
 | POST | `/api/upload/` | Uploader un fichier/audio |
 | GET | `/api/notifications` | Notifications de l'utilisateur |
-| WS | `/api/ws?token={jwt}` | WebSocket (notifications temps r├®el) |
+| WS | `/api/ws?token={jwt}` | WebSocket (notifications temps réel) |
 
-## WebSocket (temps r├®el)
+## WebSocket (temps réel)
 
-Le frontend se connecte automatiquement au WebSocket apr├¿s login.
+Le frontend se connecte automatiquement au WebSocket après login.
 
-**├ëv├®nements :**
-- `notification` ÔÇö nouvelle notification (nouveau ticket, changement statut, nouveau message)
-- `new_message` ÔÇö nouveau message dans le chat (ajout├® en temps r├®el sans refresh)
+**Événements :**
+- `notification` — nouvelle notification (nouveau ticket, changement statut, nouveau message)
+- `new_message` — nouveau message dans le chat (ajouté en temps réel sans refresh)
 
 ## Technologies
 
 - **Frontend :** Vue 3 (Composition API), Vite, Tailwind CSS 4, Chart.js, Lucide Icons
 - **Backend :** FastAPI, SQLAlchemy 2.0, PyMySQL, python-jose (JWT), Passlib (bcrypt)
-- **Base de donn├®es :** MySQL 8.0 (Docker), phpMyAdmin
+- **Base de données :** MySQL 8.0 (Docker), phpMyAdmin
 - **IA :** Groq (Llama 3) pour l'assignation automatique des techniciens
-- **Temps r├®el :** WebSocket (FastAPI WebSockets)
+- **Temps réel :** WebSocket (FastAPI WebSockets)
 
 ## Workflow de collaboration
 
 1. Travailler sur la branche `dev`
-2. Cr├®er des branches pour chaque feature : `feature/nom-de-la-feature`
+2. Créer des branches pour chaque feature : `feature/nom-de-la-feature`
 3. Pusher et faire une Pull Request vers `dev`
 
 ```bash
 git checkout dev
 git pull origin dev
 git checkout -b feature/ma-fonctionnalite
-# ... d├®velopper ...
+# ... développer ...
 git add .
-git commit -m "feat: description de la fonctionnalit├®"
+git commit -m "feat: description de la fonctionnalité"
 git push origin feature/ma-fonctionnalite
 ```
 
 ## Licence
 
-Projet d├®velopp├® pour le **Centre Informatique de l'UGANC** ÔÇö Conakry, Guin├®e.
+Projet développé pour le **Centre Informatique de l'UGANC** — Conakry, Guinée.
+Pensez à toujours repusher sur la branche `dev`.
