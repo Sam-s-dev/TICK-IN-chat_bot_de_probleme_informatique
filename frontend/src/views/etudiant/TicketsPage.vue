@@ -294,7 +294,7 @@ const stopRecording = () => {
     const mime = recordedMime
     mediaRecorder.value.onstop = () => {
       const blob = new Blob(audioChunks.value, { type: mime })
-      if (blob.size < 5000) {
+      if (blob.size < 100) {
         audioChunks.value = []
         if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null }
         return
@@ -463,7 +463,7 @@ const deleteConversation = async () => {
   confirmConvTicketId.value = null
 }
 
-const toggleAudio = async (msg) => {
+const toggleAudio = (msg) => {
   if (!audioElement.value) {
     audioElement.value = new Audio()
     audioElement.value.ontimeupdate = () => {
@@ -480,22 +480,13 @@ const toggleAudio = async (msg) => {
   if (playingAudio.value === msg.id) {
     audioElement.value.pause()
     playingAudio.value = null
-    audioElement.value.src = ''
     return
   }
   playingAudio.value = msg.id
-  try {
-    const res = await fetch(`${API}/uploads/files/${msg.attachment_id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    if (!res.ok) { playingAudio.value = null; return }
-    const blob = await res.blob()
-    const url = URL.createObjectURL(blob)
-    audioElement.value.src = url
-    audioElement.value.play().catch(() => { URL.revokeObjectURL(url); playingAudio.value = null })
-  } catch {
+  audioElement.value.src = attachmentUrl(msg)
+  audioElement.value.play().catch(() => {
     playingAudio.value = null
-  }
+  })
 }
 
 const formatAudioTime = (s) => {
@@ -743,147 +734,176 @@ onUnmounted(() => {
     <teleport to="body">
       <div v-if="showDetail && selectedTicket" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="showDetail = false">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl w-full max-w-2xl shadow-2xl max-h-[90vh] flex flex-col" data-aos="fade-up">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-primary/5 flex-shrink-0">
-            <div>
+        <div class="relative bg-white rounded-2xl w-full max-w-6xl h-[85vh] shadow-2xl flex overflow-hidden" data-aos="fade-up">
+          
+          <!-- WhatsApp-like Left Sidebar of Tickets inside Modal -->
+          <div class="w-80 border-r border-primary/5 flex flex-col bg-secondary/30 flex-shrink-0 hidden md:flex">
+            <div class="p-4 border-b border-primary/5 bg-white">
+              <h3 class="text-sm font-bold text-dark mb-2">Mes discussions</h3>
+              <div class="relative">
+                <Search class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted" />
+                <input v-model="search" type="text" placeholder="Rechercher..." class="w-full pl-8 pr-3 py-1.5 rounded-lg border border-dark/10 bg-secondary/50 text-xs focus:outline-none focus:ring-1 focus:ring-primary/30" />
+              </div>
+            </div>
+            <div class="flex-1 overflow-y-auto divide-y divide-primary/5 bg-white">
+              <div v-for="t in filteredTickets" :key="t.id" @click="openDetail(t)" :class="['p-3.5 cursor-pointer transition hover:bg-primary/[0.02]', selectedTicket.id === t.id ? 'bg-primary/5 border-l-4 border-primary' : '']">
+                <div class="flex justify-between items-start gap-2 mb-1">
+                  <span class="font-semibold text-xs text-dark">{{ t.ticket_number }}</span>
+                  <span class="text-[10px] text-muted">{{ formatTime(t.created_at) }}</span>
+                </div>
+                <p class="text-xs text-dark/70 truncate mb-1">{{ t.description }}</p>
+                <div class="flex items-center justify-between">
+                  <span :class="['inline-flex px-1.5 py-0.5 rounded text-[9px] font-medium', statusColor(t.status_id)]">{{ statusLabel(t.status_id) }}</span>
+                  <span :class="['inline-flex px-1.5 py-0.5 rounded text-[9px] font-medium', priorityColor(t.priority)]">{{ priorityLabel(t.priority) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Window Content (Right Panel) -->
+          <div class="flex-1 flex flex-col h-full bg-secondary/10 min-w-0">
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-3 bg-white border-b border-primary/5 flex-shrink-0">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-sm font-bold text-white flex-shrink-0">
+                  {{ selectedTicket.technician_name?.[0] || 'T' }}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <h2 class="text-sm font-bold text-dark truncate">{{ selectedTicket.ticket_number }}</h2>
+                    <span :class="['inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium', statusColor(selectedTicket.status_id)]">{{ statusLabel(selectedTicket.status_id) }}</span>
+                    <span :class="['inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium', priorityColor(selectedTicket.priority)]">{{ priorityLabel(selectedTicket.priority) }}</span>
+                  </div>
+                  <p class="text-xs text-muted truncate mt-0.5">Technicien : {{ selectedTicket.technician_name || 'Non assigné' }}</p>
+                </div>
+              </div>
               <div class="flex items-center gap-2">
-                <h2 class="text-lg font-bold text-dark">{{ selectedTicket.ticket_number }}</h2>
-                <span :class="['inline-flex px-2.5 py-1 rounded-full text-xs font-medium', statusColor(selectedTicket.status_id)]">{{ statusLabel(selectedTicket.status_id) }}</span>
-                <span :class="['inline-flex px-2 py-0.5 rounded-full text-xs font-medium', priorityColor(selectedTicket.priority)]">{{ priorityLabel(selectedTicket.priority) }}</span>
+                <button @click="showDetail = false" class="p-2 rounded-lg hover:bg-dark/5 transition"><X class="w-5 h-5 text-muted" /></button>
               </div>
-              <p class="text-sm text-muted mt-1">{{ selectedTicket.description?.substring(0, 120) }}</p>
             </div>
-            <button @click="showDetail = false" class="p-2 rounded-lg hover:bg-dark/5 transition"><X class="w-5 h-5 text-muted" /></button>
-          </div>
 
-          <div class="px-6 py-3 border-b border-primary/5 flex-shrink-0 bg-secondary/30">
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-              <div><span class="text-xs text-muted block">Categorie</span><span class="text-dark font-medium">{{ selectedTicket.category_name || '' }}</span></div>
-              <div><span class="text-xs text-muted block">Salle</span><span class="text-dark font-medium">{{ selectedTicket.room_name || `Salle #${selectedTicket.room_id}` }}</span></div>
-              <div><span class="text-xs text-muted block">Technicien</span>
-                <span class="text-dark font-medium flex items-center gap-1">
-                  <Wrench v-if="selectedTicket.technician_name" class="w-3.5 h-3.5 text-primary" />
-                  {{ selectedTicket.technician_name || 'Pas encore assigne' }}
-                </span>
-              </div>
-              <div><span class="text-xs text-muted block">Date</span><span class="text-dark font-medium">{{ formatDate(selectedTicket.created_at) }}</span></div>
+            <!-- Context Info Sub-header -->
+            <div class="px-6 py-2 border-b border-primary/5 flex-shrink-0 bg-secondary/50 text-xs text-muted flex flex-wrap gap-x-4 gap-y-1">
+              <span>Catégorie : <strong class="text-dark font-medium">{{ selectedTicket.category_name || '' }}</strong></span>
+              <span>•</span>
+              <span>Salle : <strong class="text-dark font-medium">{{ selectedTicket.room_name || `Salle #${selectedTicket.room_id}` }}</strong></span>
+              <span>•</span>
+              <span>Poste : <strong class="text-dark font-medium">{{ selectedTicket.workstation_number || 'N/A' }}</strong></span>
             </div>
-          </div>
 
-          <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6">
-            <div>
-              <div class="flex items-center justify-between mb-3">
-                <h4 class="text-sm font-semibold text-dark flex items-center gap-1.5"><Send class="w-3.5 h-3.5" /> Chat avec le technicien</h4>
-                <button v-if="detailMessages.length > 0" @click="confirmDeleteConversation(selectedTicket.id)" class="text-xs text-danger flex items-center gap-1 hover:underline"><Trash2 class="w-3 h-3" /> Supprimer la discussion</button>
-              </div>
+            <!-- Messages (WhatsApp styled with textured background) -->
+            <div class="flex-1 overflow-y-auto px-6 py-4 space-y-3 bg-[#e5ddd5] chat-messages flex flex-col" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23d4cfc6\' fill-opacity=\'0.25\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')">
+              <div v-for="m in detailMessages" :key="m.id" :class="['flex w-full mb-1', m.is_deleted ? 'justify-center' : (m.sender_id === user?.id ? 'justify-end' : 'justify-start')]">
+                <div v-if="m.is_deleted" class="text-xs text-gray-400 italic py-1 bg-white/60 px-3 rounded-lg shadow-sm">Ce message a été supprimé</div>
 
-              <div class="chat-messages space-y-3 max-h-80 overflow-y-auto pr-1 mb-3 p-4 bg-[#e5ddd5] rounded-xl" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23d4cfc6\' fill-opacity=\'0.25\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')">
-                <div v-for="m in detailMessages" :key="m.id" :class="['flex', m.is_deleted ? 'justify-center' : (m.sender_id === user?.id ? 'justify-end' : 'justify-start')]">
-                  <div v-if="m.is_deleted" class="text-xs text-gray-400 italic py-1">Ce message a ete supprime</div>
+                <div v-else :class="['max-w-[85%] sm:max-w-[70%] px-3 py-2 rounded-xl text-sm shadow-sm relative group', m.sender_id === user?.id ? 'bg-[#dcf8c6] text-dark rounded-tr-none ml-12' : 'bg-white text-dark rounded-tl-none mr-12']">
+                  <p class="text-[10px] font-bold text-primary/80 mb-0.5">{{ m.sender_id === user?.id ? 'Moi' : m.sender_name }}</p>
 
-                  <div v-else :class="['max-w-[80%] px-3 py-2 rounded-lg text-sm shadow-sm relative group', m.sender_id === user?.id ? 'bg-[#dcf8c6] text-dark rounded-br-sm ml-12' : 'bg-white text-dark rounded-bl-sm mr-12']">
-                    <p class="text-xs font-semibold opacity-60 mb-0.5">{{ m.sender_id === user?.id ? 'Moi' : m.sender_name }}</p>
+                  <div v-if="m.message_type === 'image' && m.attachment_url" class="py-1 -mx-1 -mt-1 mb-1">
+                    <img :src="attachmentUrl(m)" :alt="m.attachment_name || 'Image'"
+                      class="w-full rounded-lg max-h-72 object-cover cursor-pointer hover:opacity-90"
+                      @click="downloadFromMsg(m)" loading="lazy" />
+                  </div>
 
-                    <div v-if="m.message_type === 'image' && m.attachment_url" class="py-1 -mx-3 -mt-2">
-                      <img :src="attachmentUrl(m)" :alt="m.attachment_name || 'Image'"
-                        class="w-full rounded-lg max-h-72 object-cover cursor-pointer"
-                        @click="downloadFromMsg(m)" loading="lazy" />
-                    </div>
-
-                    <div v-else-if="m.message_type === 'video' && m.attachment_url" class="py-1 -mx-3 -mt-2">
-                      <div class="relative rounded-lg overflow-hidden bg-black/5">
-                          <video :src="attachmentUrl(m)" controls class="w-full max-h-72"
-                          preload="metadata" @click.stop></video>
-                      </div>
-                    </div>
-
-                    <div v-else-if="m.message_type === 'audio' && m.attachment_url" class="flex items-center gap-2 py-1 min-w-[200px]">
-                      <button @click="toggleAudio(m)" :class="['w-8 h-8 rounded-full flex items-center justify-center transition flex-shrink-0', playingAudio === m.id ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary hover:bg-primary/20']">
-                        <Play v-if="playingAudio !== m.id" class="w-4 h-4" />
-                        <Pause v-else class="w-4 h-4" />
-                      </button>
-                      <div class="flex-1 h-1.5 bg-dark/10 rounded-full overflow-hidden relative">
-                        <div class="h-full bg-primary rounded-full transition-all duration-200" :style="{ width: (playingAudio === m.id && audioDuration > 0 ? (audioProgress / audioDuration) * 100 : 0) + '%' }"></div>
-                      </div>
-                      <span class="text-xs text-muted w-10 text-right tabular-nums">{{ playingAudio === m.id ? formatAudioTime(audioProgress) : (m.attachment_name === 'Message vocal' ? '0:00' : '') }}</span>
-                    </div>
-
-                    <div v-else-if="m.message_type === 'file' && m.attachment_url" class="flex items-center gap-3 py-1">
-                      <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <FileText class="w-5 h-5 text-primary" />
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <p class="text-xs font-semibold text-dark truncate">{{ m.attachment_name || 'Fichier' }}</p>
-                        <button @click="downloadFromMsg(m)" class="text-xs text-primary hover:underline flex items-center gap-1"><Download class="w-3 h-3" />Telecharger</button>
-                      </div>
-                    </div>
-
-                    <p v-else class="text-sm whitespace-pre-wrap break-words">{{ m.message }}</p>
-
-                    <div class="flex items-center justify-end gap-1 mt-0.5">
-                      <span class="text-[10px] text-gray-500">{{ formatTime(m.created_at) }}</span>
-                      <button v-if="m.sender_id === user?.id" @click.stop="confirmDeleteMessage(m.id)" class="opacity-0 group-hover:opacity-100 transition text-danger text-xs hover:underline"><Trash2 class="w-3 h-3" /></button>
+                  <div v-else-if="m.message_type === 'video' && m.attachment_url" class="py-1 -mx-1 -mt-1 mb-1">
+                    <div class="relative rounded-lg overflow-hidden bg-black/5">
+                        <video :src="attachmentUrl(m)" controls class="w-full max-h-72" preload="metadata" @click.stop></video>
                     </div>
                   </div>
-                </div>
-                <p v-if="detailMessages.length === 0" class="text-center text-muted text-sm py-8">Aucun message. Soyez le premier a ecrire.</p>
-              </div>
 
-              <div v-if="recording" class="flex items-center gap-3 mb-3 p-3 bg-danger/5 rounded-xl">
-                <div class="w-3 h-3 bg-danger rounded-full animate-pulse"></div>
-                <span class="text-sm font-semibold text-danger">Enregistrement en cours</span>
-                <span class="text-sm text-muted">{{ formatRecordingTime(recordingTime) }}</span>
+                  <div v-else-if="m.message_type === 'audio' && m.attachment_url" class="flex items-center gap-2 py-1 min-w-[200px]">
+                    <button @click="toggleAudio(m)" :class="['w-8 h-8 rounded-full flex items-center justify-center transition flex-shrink-0', playingAudio === m.id ? 'bg-primary/20 text-primary' : 'bg-primary/10 text-primary hover:bg-primary/20']">
+                      <Play v-if="playingAudio !== m.id" class="w-4 h-4" />
+                      <Pause v-else class="w-4 h-4" />
+                    </button>
+                    <div class="flex-1 h-1 bg-dark/10 rounded-full overflow-hidden relative">
+                      <div class="h-full bg-primary rounded-full transition-all duration-200" :style="{ width: (playingAudio === m.id && audioDuration > 0 ? (audioProgress / audioDuration) * 100 : 0) + '%' }"></div>
+                    </div>
+                    <span class="text-[10px] text-muted w-10 text-right tabular-nums">{{ playingAudio === m.id ? formatAudioTime(audioProgress) : 'Vocal' }}</span>
+                  </div>
+
+                  <div v-else-if="m.message_type === 'file' && m.attachment_url" class="flex items-center gap-3 py-1">
+                    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <FileText class="w-5 h-5 text-primary" />
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs font-semibold text-dark truncate">{{ m.attachment_name || 'Fichier' }}</p>
+                      <button @click="downloadFromMsg(m)" class="text-xs text-primary hover:underline flex items-center gap-1"><Download class="w-3 h-3" />Télécharger</button>
+                    </div>
+                  </div>
+
+                  <p v-else class="text-sm whitespace-pre-wrap break-words">{{ m.message }}</p>
+
+                  <div class="flex items-center justify-end gap-1 mt-1 text-[9px] text-gray-500">
+                    <span>{{ formatTime(m.created_at) }}</span>
+                    <button v-if="m.sender_id === user?.id" @click.stop="confirmDeleteMessage(m.id)" class="opacity-0 group-hover:opacity-100 transition text-danger hover:underline ml-1"><Trash2 class="w-2.5 h-2.5" /></button>
+                  </div>
+                </div>
+              </div>
+              <p v-if="detailMessages.length === 0" class="text-center text-muted text-sm py-8 bg-white/50 rounded-xl my-auto mx-auto px-6">Aucun message. Entamez la discussion avec votre technicien.</p>
+            </div>
+
+            <!-- Footer / Input bar -->
+            <div class="p-4 bg-white border-t border-primary/5 flex-shrink-0 flex flex-col gap-2">
+              <div v-if="recording" class="flex items-center gap-3 p-2 bg-danger/5 rounded-xl border border-danger/10">
+                <div class="w-2.5 h-2.5 bg-danger rounded-full animate-pulse"></div>
+                <span class="text-xs font-semibold text-danger">Enregistrement...</span>
+                <span class="text-xs text-muted font-mono">{{ formatRecordingTime(recordingTime) }}</span>
                 <div class="flex-1"></div>
-                <button @click="cancelRecording" class="text-xs text-muted hover:text-danger transition flex items-center gap-1"><X class="w-3 h-3" /> Annuler</button>
+                <button @click="cancelRecording" class="text-xs text-muted hover:text-danger transition flex items-center gap-1"><X class="w-3.5 h-3.5" /> Annuler</button>
               </div>
 
               <div class="flex gap-2 items-center">
-                <label class="p-2.5 rounded-xl text-muted hover:bg-primary/5 hover:text-primary transition cursor-pointer" title="Joindre un fichier">
+                <label class="p-2.5 rounded-xl text-muted hover:bg-primary/5 hover:text-primary transition cursor-pointer flex-shrink-0" title="Joindre un fichier">
                   <Paperclip class="w-4 h-4" />
                   <input ref="previewFileInput" type="file" accept="image/jpeg,image/png,image/gif,application/pdf,audio/webm,audio/ogg,video/mp4,video/webm" @change="chatFileSelected" class="hidden" :disabled="chatUploading || recording" />
                 </label>
                 <button
                   @click="toggleRecording"
-                  :class="['p-2.5 rounded-xl select-none transition', recording ? 'bg-danger text-white shadow-lg animate-pulse' : 'text-muted hover:bg-primary/5 hover:text-primary']"
-                  :title="recording ? 'Cliquez pour arreter' : 'Cliquez pour enregistrer un vocal'"
+                  :class="['p-2.5 rounded-xl select-none transition flex-shrink-0', recording ? 'bg-danger text-white shadow-lg animate-pulse' : 'text-muted hover:bg-primary/5 hover:text-primary']"
+                  :title="recording ? 'Arrêter et envoyer' : 'Enregistrer un vocal'"
                 >
                   <Mic class="w-4 h-4" />
                 </button>
-                <input v-model="messageText" @keyup.enter="sendMessage" type="text" placeholder="Ecrivez votre message..." class="flex-1 px-4 py-2.5 rounded-xl border border-dark/10 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" :disabled="recording" />
-                <button @click="sendMessage" :disabled="sendingMessage || !messageText.trim() || recording" class="gradient-bg text-white p-2.5 rounded-xl disabled:opacity-50 transition hover:shadow-lg"><Send class="w-4 h-4" /></button>
+                <input v-model="messageText" @keyup.enter="sendMessage" type="text" placeholder="Tapez votre message..." class="flex-1 px-4 py-2 rounded-xl border border-dark/10 bg-secondary/30 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30" :disabled="recording" />
+                <button @click="sendMessage" :disabled="sendingMessage || !messageText.trim() || recording" class="gradient-bg text-white p-2.5 rounded-xl disabled:opacity-50 transition hover:shadow-lg flex-shrink-0"><Send class="w-4 h-4" /></button>
               </div>
-            </div>
 
-            <div v-if="detailAttachments.length > 0">
-              <h4 class="text-sm font-semibold text-dark mb-2 flex items-center gap-1.5"><Paperclip class="w-3.5 h-3.5" /> Pieces jointes</h4>
-              <div class="flex flex-wrap gap-2">
-                <button v-for="a in detailAttachments" :key="a.id" @click="downloadFile(a)" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-secondary/50 border border-dark/10 text-xs text-muted hover:border-primary/30 hover:text-primary transition">
-                  <component :is="a.mime_type?.startsWith('image/') ? Image : FileText" class="w-3.5 h-3.5" />
-                  <span class="truncate max-w-[150px]">{{ a.file_name }}</span>
-                  <Download class="w-3 h-3 flex-shrink-0" />
-                </button>
-              </div>
-            </div>
-
-            <div v-if="showEvalForm">
-              <div class="bg-accent/10 border border-accent/30 rounded-xl p-4">
-                <h4 class="text-sm font-semibold text-dark mb-2">Evaluer la resolution</h4>
-                <p class="text-xs text-muted mb-3">Comment evaluez-vous la prise en charge de votre ticket ?</p>
-                <div class="flex gap-2 mb-3">
-                  <button v-for="n in 3" :key="n" @click="evalRating = n" :class="['p-2 rounded-lg transition', evalRating >= n ? 'text-yellow-500 bg-yellow-50' : 'text-gray-300 bg-gray-50']">
-                    <Star class="w-7 h-7" :fill="evalRating >= n ? 'currentColor' : 'none'" />
+              <!-- Attachments / Options row -->
+              <div v-if="detailAttachments.length > 0 || showEvalForm || detailEval" class="mt-2 border-t border-primary/5 pt-2 flex flex-wrap gap-2 items-center justify-between">
+                <div v-if="detailAttachments.length > 0" class="flex flex-wrap gap-1">
+                  <button v-for="a in detailAttachments" :key="a.id" @click="downloadFile(a)" class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-secondary text-[10px] text-muted hover:bg-primary/10 hover:text-primary border border-dark/5 transition">
+                    <component :is="a.mime_type?.startsWith('image/') ? Image : FileText" class="w-3 h-3" />
+                    <span class="truncate max-w-[120px]">{{ a.file_name }}</span>
+                    <Download class="w-2.5 h-2.5 flex-shrink-0" />
                   </button>
                 </div>
-                <textarea v-model="evalComment" rows="2" class="w-full px-3 py-2 rounded-xl border border-dark/10 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none mb-3" placeholder="Un commentaire ? (optionnel)"></textarea>
-                <button @click="submitEval" :disabled="submittingEval || evalRating === 0" class="w-full gradient-bg text-white py-2 rounded-xl text-sm font-semibold disabled:opacity-50 transition">Noter</button>
+                
+                <div v-if="showEvalForm" class="w-full mt-2">
+                  <div class="bg-accent/10 border border-accent/20 rounded-xl p-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div>
+                      <h4 class="text-xs font-bold text-dark">Résolution de l'incident</h4>
+                      <p class="text-[10px] text-muted">Évaluez la prise en charge de ce ticket :</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <div class="flex gap-1">
+                        <button v-for="n in 3" :key="n" @click="evalRating = n" :class="['p-1 rounded transition', evalRating >= n ? 'text-yellow-500 bg-yellow-50' : 'text-gray-300 bg-gray-50']">
+                          <Star class="w-5 h-5" :fill="evalRating >= n ? 'currentColor' : 'none'" />
+                        </button>
+                      </div>
+                      <button @click="submitEval" :disabled="submittingEval || evalRating === 0" class="gradient-bg text-white px-3 py-1 rounded text-xs font-semibold disabled:opacity-50 transition">Évaluer</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="detailEval" class="bg-accent/5 border border-accent/15 rounded-lg px-3 py-1.5 text-xs text-muted flex items-center gap-2">
+                  <span>Votre évaluation :</span>
+                  <span class="flex text-yellow-500">{{ [1,2,3].map(n => n <= detailEval.rating ? '★' : '☆').join('') }}</span>
+                </div>
               </div>
             </div>
-
-            <div v-if="detailEval" class="bg-accent/10 border border-accent/30 rounded-xl p-4">
-              <div class="flex items-center gap-2 mb-1"><span class="text-sm font-semibold text-dark">Votre evaluation</span><span class="flex gap-0.5 text-yellow-500">{{ [1,2,3].map(n => n <= detailEval.rating ? '★' : '☆').join('') }}</span></div>
-              <p v-if="detailEval.comment" class="text-sm text-muted">{{ detailEval.comment }}</p>
-            </div>
           </div>
+
         </div>
       </div>
     </teleport>
