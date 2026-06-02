@@ -12,8 +12,9 @@ router = APIRouter(prefix="/api/auth", tags=["Authentification"])
 
 @router.post("/login", response_model=TokenResponse)
 def login(req: LoginRequest, db: Session = Depends(get_db)):
+    clean_login = req.login.strip() if req.login else ""
     user = db.query(User).filter(
-        (User.email == req.login) | (User.username == req.login)
+        (User.email == clean_login) | (User.username == clean_login)
     ).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Identifiant ou mot de passe incorrect")
